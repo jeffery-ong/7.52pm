@@ -42,7 +42,7 @@ app.use(session({
 }));
 app.use(flash());
 
-// Middleware
+//  Middleware
 const checkAuthenticated = (req, res, next) => {
     if (req.session.user) return next();
     req.flash('error', 'Please log in to view this resource');
