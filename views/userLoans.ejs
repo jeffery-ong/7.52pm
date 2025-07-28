@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Loan Records</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .navbar .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .navbar .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 100%; height: 2px;
+      background: #00f7ff;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    .navbar .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+    body {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(255, 255, 255, 0.8);">
+    <div class="container">
+      <a class="navbar-brand fw-bold" style="font-size:25px;" href="/">Library App</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+          <!-- Search Form -->
+          <li class="nav-item me-3">
+            <form action="/shopping" method="GET" class="d-flex align-items-center bg-white rounded-pill px-2 border" role="search" style="max-width: 260px;">
+              <input
+                type="text"
+                name="q"
+                class="form-control form-control-sm border-0 bg-transparent"
+                placeholder="Enter book title or author"
+                value=""
+                style="box-shadow: none;"
+              />
+              <button type="submit" class="btn btn-sm btn-link text-dark p-0 ms-2">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+          </li>
+          <!-- Cart -->
+          <li class="nav-item">
+            <a class="nav-link" href="/cart"><i class="fas fa-shopping-cart me-1"></i>Cart</a>
+          </li>
+          <!-- Logout -->
+          <li class="nav-item">
+            <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-4">
+    <div class="card p-4 shadow">
+      <h4 class="text-center mb-3">Your Loan Records</h4>
+
+      <!-- Flash Messages -->
+      <% if (messages && messages.length > 0) { %>
+        <% messages.forEach(msg => { %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <%= msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% }); %>
+      <% } %>
+
+      <% if (successes && successes.length > 0) { %>
+        <% successes.forEach(msg => { %>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% }); %>
+      <% } %>
+
+      <!-- Loans Table -->
+      <div class="table-responsive">
+        <% if (loans && loans.length > 0) { %>
+          <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Cover</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publisher</th>
+                <th>Borrowed Date</th>
+                <th>Status</th>
+                <th>Borrowed Qty</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% loans.forEach(loan => { %>
+                <tr>
+                  <td>
+                    <img 
+                      src="/images/<%= loan.image ? loan.image : 'default-book.png' %>" 
+                      width="60" 
+                      class="rounded shadow-sm" 
+                      alt="<%= loan.title %> cover">
+                  </td>
+                  <td><strong><%= loan.title %></strong></td>
+                  <td><%= loan.author %></td>
+                  <td><%= loan.publisher %></td>
+                  <td><%= new Date(loan.loan_date).toLocaleDateString() %></td>
+                  <td>
+                    <span class="badge bg-<%= 
+                      loan.status === 'On Loan' ? 'primary' : 
+                      loan.status === 'Returned' ? 'success' : 'secondary' 
+                    %>">
+                      <%= loan.status %>
+                    </span>
+                  </td>
+                  <td><%= loan.quantity %></td>
+                  <td>
+                    <% if (loan.status === 'On Loan') { %>
+                      <form action="/return-loan/<%= loan.loan_id %>" method="POST" class="d-inline">
+                        <div class="input-group">
+                          <input 
+                            type="number" 
+                            name="quantity" 
+                            value="1" 
+                            min="1" 
+                            max="<%= loan.quantity %>" 
+                            class="form-control" 
+                            required
+                          >
+                          <button class="btn btn-success btn-sm" type="submit">
+                            Return
+                          </button>
+                        </div>
+                      </form>
+                    <% } else { %>
+                      <span class="text-muted">Returned</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p class="text-center">You have no loan records.</p>
+        <% } %>
+      </div>
+
+      <!-- Back to Shopping -->
+      <div class="d-flex justify-content-center mt-3">
+        <a href="/shopping" class="btn btn-primary">Browse Books</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

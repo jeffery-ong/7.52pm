@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Availability</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">Library App</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/availability"><i class="fas fa-caret-left me-1"></i>Back to Available Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center">Add Availability</h2>
+    <form action="/addAvailability" method="POST">
+      <div class="mb-3">
+        <label for="book_id" class="form-label">Book</label>
+        <select name="book_id" id="book_id" class="form-control" required>
+          <% books.forEach(book => { %>
+            <option value="<%= book.book_id %>"><%= book.title %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="publisher_id" class="form-label">Publisher</label>
+        <select name="publisher_id" id="publisher_id" class="form-control" required>
+          <% publishers.forEach(p => { %>
+            <option value="<%= p.publisher_id %>"><%= p.name %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="available_quantity" class="form-label">Available Quantity</label>
+        <input type="number" name="available_quantity" id="available_quantity" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+  </div>
+</body>
+</html>

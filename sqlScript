@@ -1,0 +1,6 @@
+CREATE TABLE availability (
+    availability_id INT PRIMARY KEY AUTO_INCREMENT,
+    book_id INT NOT NULL,
+    publisher_id INT NOT NULL,
+    available_quantity INT NOT NULL
+);

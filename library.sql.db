@@ -1,0 +1,61 @@
+CREATE TABLE books (
+  book_id INT PRIMARY KEY,
+  isbn VARCHAR(20),
+  title VARCHAR(255),
+  author VARCHAR(100),
+  image_url TEXT
+);
+INSERT INTO books (book_id, isbn, title, author, image_url) VALUES
+(3, '9780743273565', 'The Great Gatsby', 'F. Scott Fitzgerald', 'https://m.media-amazon.com/images/I/81TLiZrasVL._AC_UY654_FMwebp_QL65_.jpg'),
+(4, '9780061120084', 'To Kill a Mockingbird', 'Harper Lee', 'https://m.media-amazon.com/images/I/81aY1xk+9L._AC_UY436_FMwebp_QL65_.jpg'),
+(5, '9780451524935', '1984', 'George Orwell', 'https://m.media-amazon.com/images/I/71wANojhEKL._AC_UL640_FMwebp_QL65_.jpg'),
+(6, '9780141439518', 'Pride and Prejudice', 'Jane Austen', 'https://m.media-amazon.com/images/I/61bydge8SIL._AC_UY436_FMwebp_QL65_.jpg'),
+(7, '9780547928227', 'The Hobbit', 'J.R.R. Tolkien', 'https://m.media-amazon.com/images/I/712cDO7d73L._AC_UY436_FMwebp_QL65_.jpg'),
+(8, '9780734713567', 'Dune', 'Frank Herbert', 'https://m.media-amazon.com/images/I/41375FUQTHL._SY445_SX342_ControlCacheEqualizer_.jpg');
+
+CREATE TABLE publishers (
+  publisher_id INT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  contact VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL
+);
+INSERT INTO publishers (publisher_id, name, address, contact, email) VALUES
+(2, 'Penguin Random House', '1745 Broadway, New York, NY 10019', '212-782-9000', 'contact@penguinrandomhouse.com'),
+(3, 'HarperCollins', '195 Broadway, New York, NY 10002', '212-207-7000', 'info@harpercollins.com'),
+(4, 'Macmillan Publishers', '120 Broadway, New York, NY 10271', '646-307-5151', 'support@macmillan.com'),
+(5, 'Oxford University Press', 'Great Clarendon Street, Oxford, OX2 6DP, UK', '+44 1865 556767', 'enquiries.uk@oup.com'),
+(6, 'Scholastic', '557 Broadway, New York, NY 10012', '800-724-6527', 'help@scholastic.com');
+
+CREATE TABLE availability (
+  availability_id INT PRIMARY KEY,
+  book_id INT NOT NULL,
+  publisher_id INT NOT NULL,
+  available_quantity INT NOT NULL,
+  FOREIGN KEY (book_id) REFERENCES books(book_id),
+  FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id)
+);
+
+CREATE TABLE loan (
+  loan_id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT,
+  availability_id INT,
+  loan_date DATE,
+  due_date DATE,
+  return_date DATE,
+  status VARCHAR(20),
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (availability_id) REFERENCES availability(availability_id)
+);
+
+
+CREATE TABLE users (
+  user_id INT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  address VARCHAR(255),
+  contact VARCHAR(50),
+  role VARCHAR(20)
+);
+
